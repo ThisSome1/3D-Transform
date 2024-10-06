@@ -33,7 +33,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Deselect",
+                    "name": "Back",
                     "type": "Value",
                     "id": "4830e6ad-e693-42c3-b7c6-90a187cab1cb",
                     "expectedControlType": "Button",
@@ -123,11 +123,11 @@
                 {
                     "name": "",
                     "id": "c1b8606b-4157-4af5-8791-1a5f4fb206ed",
-                    "path": "<Mouse>/rightButton",
+                    "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Deselect",
+                    "action": "Back",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

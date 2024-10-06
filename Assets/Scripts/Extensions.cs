@@ -9,6 +9,8 @@ public static class Vector3Ext
     public static Vector3 mul(this Vector3 a, Vector3 b) => new Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
     public static Vector3 cross(this Vector3 a, Vector3 b) => new Vector3(a.y * b.z - a.z * b.y, a.x * b.z - a.z * b.x, a.x * b.y - a.y * b.x);
     public static Vector3 div(this Vector3 a, Vector3 b) => new Vector3(b.x != 0 ? a.x / b.x : a.x / 1, b.y != 0 ? a.y / b.y : a.y / 1, b.z != 0 ? a.z / b.z : a.z / 1);
+    public static Vector3 mod(this Vector3 a, float f) => new Vector3(a.x % f, a.y % f, a.z % f);
+    public static Vector3 mod(this Vector3 a, Vector3 b) => new Vector3(a.x % b.x, a.y % b.y, a.z % b.z);
     public static Vector3 pow(this Vector3 a, int p) => new Vector3(Mathf.Pow(a.x, p), Mathf.Pow(a.y, p), Mathf.Pow(a.z, p));
     public static Vector2 xy(this Vector3 a) => new Vector2(a.x, a.y);
     public static Vector2 xz(this Vector3 a) => new Vector2(a.x, a.z);

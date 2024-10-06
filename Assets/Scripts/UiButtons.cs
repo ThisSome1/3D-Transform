@@ -24,12 +24,11 @@ public class UiButtons : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     public void OnPointerEnter(PointerEventData eventData)
     {
         hovered = true;
-        Invoke("ShowTooltip", 2);
+        Invoke("ShowTooltip", 1);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        Debug.Log("PointerExit");
         hovered = false;
     }
 
@@ -38,13 +37,6 @@ public class UiButtons : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         if (hovered)
         {
             float width = 8;
-            // int width = 10;
-            // foreach (char c in text)
-            // {
-            //     tooltipTMP.font.sourceFontFile.GetCharacterInfo(text[0], out CharacterInfo info);
-            //     width += info.glyphWidth;
-            // }
-
             TMP_FontAsset fontAsset = tooltipTMP.font;
             float pointSizeScale = tooltipTMP.fontSize / (fontAsset.faceInfo.pointSize * fontAsset.faceInfo.scale);
             float emScale = tooltipTMP.fontSize * 0.01f;
@@ -55,7 +47,6 @@ public class UiButtons : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
             for (int i = 0; i < text.Length; i++)
             {
                 char unicode = text[i];
-                // Make sure the given unicode exists in the font asset.
                 if (fontAsset.characterLookupTable.TryGetValue(unicode, out TMP_Character character))
                     width += character.glyph.metrics.horizontalAdvance * pointSizeScale + (styleSpacingAdjustment + normalSpacingAdjustment) * emScale;
             }
