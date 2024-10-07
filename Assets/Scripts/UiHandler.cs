@@ -1,7 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
-using TMPro;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine;
+using TMPro;
 
 public class UiHandler : MonoBehaviour
 {
@@ -19,15 +20,96 @@ public class UiHandler : MonoBehaviour
 
     [SerializeField] GameObject prefabCube, prefabCylinder, prefabSphere;
     [SerializeField] CharachterMovement movementScript;
-    [SerializeField] Material defaultMaterial;
+
+    EventSystem eventSystem;
+    Vector2 currMousePos, prevMousePos;
+    bool clickDown = false, prevClickDown = false, dragging = false, rclickDown = false, screenDragging = false;
+    bool selectedObjectWasKinematic = false;
 
     void Start()
     {
+        eventSystem = GetComponentInChildren<EventSystem>();
         Invoke("Pause", 0.01f);
     }
     void Update()
     {
+        Vector2 delta = currMousePos - prevMousePos;
+        if (dragging)
+        {
+            switch (tool)
+            {
+                case Tools.Move:
+                    Vector3 dif = Camera.main.ScreenToWorldPoint(new(currMousePos.x, currMousePos.y, 3)) - Camera.main.ScreenToWorldPoint(new(prevMousePos.x, prevMousePos.y, 3));
+                    Interact.selected.transform.position += dif;
+                    break;
+                case Tools.Scale:
+                    Interact.selected.transform.localScale += delta.y * Vector3.one / Screen.dpi;
+                    break;
+                case Tools.Rotate:
+                    Interact.selected.transform.Rotate(movementScript.transform.up, -delta.x, Space.World);
+                    Interact.selected.transform.Rotate(movementScript.transform.right, delta.y, Space.World);
+                    break;
+            }
+        }
+        if (screenDragging)
+        {
+            movementScript.transform.parent.Rotate(Vector3.up, delta.x / Screen.dpi * 5, Space.World);
+            movementScript.transform.Rotate(Vector3.right, -delta.y / Screen.dpi * 5, Space.Self);
+        }
+        prevMousePos = currMousePos;
+    }
+    void FixedUpdate()
+    {
+        if (Interact.selected && clickDown)
+        {
+            Debug.DrawRay(movementScript.transform.position, (Camera.main.ScreenToWorldPoint(new(currMousePos.x, currMousePos.y, 3)) - movementScript.transform.position).normalized * 10, Color.blue);
+            if (tool == Tools.Move)
+            {
+                if (Physics.Raycast(movementScript.transform.position, Camera.main.ScreenToWorldPoint(new(currMousePos.x, currMousePos.y, 3)) - movementScript.transform.position, out RaycastHit hit, 10, LayerMask.GetMask("Interactable"))
+                    && hit.collider.TryGetComponent(out Interactable obj) && obj.gameObject == Interact.selected && !prevClickDown)
+                    dragging = true;
+            }
+            else if (!eventSystem.IsPointerOverGameObject() && !prevClickDown)
+                dragging = true;
+        }
+        else if (dragging)
+            dragging = false;
 
+        if (Interact.selected && !clickDown && rclickDown)
+            screenDragging = true;
+        else if (screenDragging)
+            screenDragging = false;
+
+        prevClickDown = clickDown;
+    }
+
+    void OnClick(InputValue iv)
+    {
+        if (uiStack.Count == 0) return;
+        clickDown = iv.isPressed;
+        prevMousePos = currMousePos;
+    }
+    void OnRightClick(InputValue iv)
+    {
+        if (uiStack.Count == 0) return;
+        rclickDown = iv.isPressed;
+        prevMousePos = currMousePos;
+    }
+    void OnPoint(InputValue iv)
+    {
+        if (uiStack.Count == 0) return;
+        currMousePos = iv.Get<Vector2>();
+    }
+    void OnToolSelect(InputValue iv)
+    {
+        if (uiStack.Count == 0) return;
+        float val = iv.Get<float>();
+        if (val == 4)
+        {
+            if (uiStack.Peek() == toolbarMenu) ToggleRigid();
+        }
+        else if (uiStack.Peek() == toolbarMenu || uiStack.Peek() == toolName)
+            SelectTool(val switch { 1 => "move", 2 => "scale", 3 => "rotate", _ => "" });
     }
 
     internal void ShowToolbar()
@@ -45,6 +127,9 @@ public class UiHandler : MonoBehaviour
                 top.MoveAnimatedTo(new(-192, 0));
             else if (top == toolName)
             {
+                tool = Tools.None;
+                Rigidbody rb = Interact.selected.GetComponent<Rigidbody>();
+                rb.isKinematic = selectedObjectWasKinematic;
                 top.AlphaAnimatedTo(0);
                 toolbarMenu.MoveAnimatedTo(new(0, 0));
             }
@@ -70,10 +155,15 @@ public class UiHandler : MonoBehaviour
             default:
                 return;
         }
+        Rigidbody rb = Interact.selected.GetComponent<Rigidbody>();
+        selectedObjectWasKinematic = rb.isKinematic;
+        rb.isKinematic = true;
         toolName.GetComponentInChildren<TextMeshProUGUI>().text = "Tool:\n" + tool.ToString();
         toolbarMenu.MoveAnimatedTo(new(-192, 0));
         toolName.AlphaAnimatedTo(1);
-        uiStack.Push(toolName);
+        if (uiStack.Peek() != toolName)
+            uiStack.Push(toolName);
+        prevClickDown = true;
     }
     public void ToggleRigid()
     {

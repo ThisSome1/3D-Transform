@@ -3,6 +3,9 @@ using UnityEngine.InputSystem;
 
 public class CharachterMovement : MonoBehaviour
 {
+    internal float Speed => speed;
+    internal bool Moving => movement.magnitude > 0;
+
     [SerializeField] float speed = 5, lookSensitivity = 4;
 
     Vector3 movement;
@@ -13,7 +16,7 @@ public class CharachterMovement : MonoBehaviour
 
     void Update()
     {
-        transform.parent.position += (movement.x * transform.right.xoz().normalized + movement.z * transform.forward.xoz().normalized) * Time.deltaTime * speed;
+        transform.parent.position += (movement.x * transform.right.XOZ().normalized + movement.z * transform.forward.XOZ().normalized) * Time.deltaTime * speed;
 
         if (UiHandler.uiStack.Count > 0 && enabled)
         {
@@ -38,5 +41,4 @@ public class CharachterMovement : MonoBehaviour
         transform.parent.Rotate(Vector3.up, val.x * lookSensitivity / 10, Space.World);
         transform.Rotate(Vector3.right, -val.y * lookSensitivity / 10, Space.Self);
     }
-
 }

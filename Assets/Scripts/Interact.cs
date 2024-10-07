@@ -15,11 +15,11 @@ public class Interact : MonoBehaviour
     Vector3 gizCenter;
     void FixedUpdate()
     {
-        if (selected == null)
+        if (!selected)
         {
-            if (Physics.Raycast(transform.position, transform.forward, out RaycastHit giz, 5, LayerMask.GetMask("Highlight", "Interactable")))
+            if (Physics.Raycast(transform.position, transform.forward, out RaycastHit giz, 3, LayerMask.GetMask("Highlight", "Interactable")))
                 gizCenter = giz.point;
-            if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, 5, LayerMask.GetMask("Highlight", "Interactable")) && hit.collider.TryGetComponent(out Interactable obj))
+            if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, 3, LayerMask.GetMask("Highlight", "Interactable")) && hit.collider.TryGetComponent(out Interactable obj))
             {
                 hoveredObject = obj;
                 if (!obj.Highlighted)
@@ -63,6 +63,10 @@ public class Interact : MonoBehaviour
     {
         uiHandler.ShowToolbar();
         selected = hoveredObject.gameObject;
+        Rigidbody rb = hoveredObject.GetComponent<Rigidbody>();
+        if (!rb.isKinematic)
+            rb.velocity = Vector3.zero;
+        rb.Sleep();
         hoveredObject.UnHighlight();
         hoveredObject = null;
     }
