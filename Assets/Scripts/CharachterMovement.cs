@@ -1,3 +1,4 @@
+using Unity.Burst.Intrinsics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -23,6 +24,7 @@ public class CharachterMovement : MonoBehaviour
             enabled = false;
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
+            movement = Vector3.zero;
         }
     }
 

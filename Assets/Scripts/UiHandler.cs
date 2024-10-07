@@ -16,7 +16,7 @@ public class UiHandler : MonoBehaviour
     internal static Stack<AnimatedRectTransform> uiStack = new();
     internal static Tools tool = Tools.None;
 
-    [SerializeField] AnimatedRectTransform mainMenu, addMenu, confirmMenu, toolbarMenu, toolName;
+    [SerializeField] AnimatedRectTransform mainMenu, addMenu, confirmMenu, toolbarMenu, toolName, crosshair;
 
     [SerializeField] GameObject prefabCube, prefabCylinder, prefabSphere;
     [SerializeField] CharachterMovement movementScript;
@@ -57,6 +57,9 @@ public class UiHandler : MonoBehaviour
             movementScript.transform.Rotate(Vector3.right, -delta.y / Screen.dpi * 5, Space.Self);
         }
         prevMousePos = currMousePos;
+
+        if (uiStack.Count > 0) { if (crosshair.gameObject.activeSelf) crosshair.gameObject.SetActive(false); }
+        else if (!crosshair.gameObject.activeSelf) crosshair.gameObject.SetActive(true);
     }
     void FixedUpdate()
     {
