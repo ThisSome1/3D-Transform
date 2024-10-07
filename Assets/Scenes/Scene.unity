@@ -5145,6 +5145,7 @@ GameObject:
   - component: {fileID: 2016473987}
   - component: {fileID: 2016473988}
   - component: {fileID: 2016473985}
+  - component: {fileID: 2016473989}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -5198,6 +5199,18 @@ CapsuleCollider:
   m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: -1, z: 0}
+--- !u!114 &2016473989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2016473984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7f4328205312ba48b327747789928c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2113278627
 GameObject:
   m_ObjectHideFlags: 0
@@ -5444,6 +5457,11 @@ PrefabInstance:
     serializedVersion: 2
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3839093041613188914, guid: cb840a110e20083458a1b905cf4c5e05,
+        type: 3}
+      propertyPath: m_UseGravity
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3839093041613188915, guid: cb840a110e20083458a1b905cf4c5e05,
         type: 3}
       propertyPath: m_Name
