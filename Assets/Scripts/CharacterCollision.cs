@@ -8,12 +8,24 @@ public class CharacterCollision : MonoBehaviour
     {
         charachterMovement = GetComponentInChildren<CharachterMovement>();
     }
-    void OnCollisionEnter(Collision collision)
+    void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.TryGetComponent(out Rigidbody rb) && collision.gameObject.GetComponent<Interactable>() && charachterMovement.Moving)
+        if (other.gameObject.TryGetComponent(out Rigidbody rb) && other.gameObject.GetComponent<Interactable>())
         {
-            Vector3 cp = Vector3Ext.Average(collision.contacts.Select((x) => x.point));
-            rb.AddForce((cp.XOZ() - transform.position.XOZ()).normalized * charachterMovement.Speed / 10, ForceMode.Impulse);
+            if (charachterMovement.Moving)
+                rb.AddForce((other.transform.position - transform.position).XOZ().normalized * charachterMovement.Speed / 10, ForceMode.Impulse);
+            else
+                rb.AddForce(Vector3.Project(-rb.velocity, (other.transform.position - transform.position).normalized.XOZ()) * 2, ForceMode.VelocityChange);
+        }
+    }
+    void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.TryGetComponent(out Rigidbody rb))
+        {
+            if (charachterMovement.Moving)
+                rb.AddForce((other.transform.position - transform.position).XOZ().normalized * charachterMovement.Speed / 10, ForceMode.Impulse);
+            else
+                rb.AddForce((other.transform.position - transform.position).normalized * 2, ForceMode.VelocityChange);
         }
     }
 }

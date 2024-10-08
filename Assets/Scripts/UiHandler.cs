@@ -3,6 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine;
 using TMPro;
+using System.Linq;
 
 public class UiHandler : MonoBehaviour
 {
@@ -26,13 +27,28 @@ public class UiHandler : MonoBehaviour
     bool clickDown = false, prevClickDown = false, dragging = false, rclickDown = false, screenDragging = false;
     bool selectedObjectWasKinematic = false;
 
+    TextMeshProUGUI fps;
+    readonly List<int> fpsCache = new();
+
     void Start()
     {
         eventSystem = GetComponentInChildren<EventSystem>();
+        fps = GameObject.Find("FPS").GetComponent<TextMeshProUGUI>();
         Invoke("Pause", 0.01f);
     }
     void Update()
     {
+        fpsCache.Add((int)(1 / Time.deltaTime));
+        if (fpsCache.Count > 10) fpsCache.RemoveAt(fpsCache.Count - 1);
+        int avgFps = (int)fpsCache.Average();
+        fps.text = avgFps.ToString();
+        if (avgFps > 60)
+            fps.color = Color.green;
+        else if (avgFps > 45)
+            fps.color = Color.Lerp(Color.yellow, Color.green, Mathf.Clamp01((avgFps - 45) / 15f));
+        else
+            fps.color = Color.Lerp(Color.red, Color.yellow, Mathf.Clamp01((avgFps - 30) / 15f));
+
         Vector2 delta = currMousePos - prevMousePos;
         if (dragging)
         {

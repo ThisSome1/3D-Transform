@@ -21,6 +21,8 @@ public class Interact : MonoBehaviour
                 gizCenter = giz.point;
             if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, 3, LayerMask.GetMask("Highlight", "Interactable")) && hit.collider.TryGetComponent(out Interactable obj))
             {
+                if (hoveredObject && hoveredObject != obj)
+                    hoveredObject.UnHighlight();
                 hoveredObject = obj;
                 if (!obj.Highlighted)
                     obj.Highlight();
