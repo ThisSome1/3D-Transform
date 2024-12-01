@@ -15,7 +15,7 @@ public class CharacterCollision : MonoBehaviour
             if (charachterMovement.Moving)
                 rb.AddForce((other.transform.position - transform.position).XOZ().normalized * charachterMovement.Speed / 10, ForceMode.Impulse);
             else
-                rb.AddForce(Vector3.Project(-rb.velocity, (other.transform.position - transform.position).normalized.XOZ()) * 2, ForceMode.VelocityChange);
+                rb.AddForce(Vector3.Project(-rb.linearVelocity, (other.transform.position - transform.position).normalized.XOZ()) * 2, ForceMode.VelocityChange);
         }
     }
     void OnTriggerStay(Collider other)

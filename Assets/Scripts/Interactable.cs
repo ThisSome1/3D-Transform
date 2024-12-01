@@ -19,7 +19,7 @@ public class Interactable : MonoBehaviour
     void Update()
     {
         if (!rigidBody.isKinematic)
-            rigidBody.velocity -= new Vector3(0, gravity, 0) * Time.deltaTime;
+            rigidBody.linearVelocity -= new Vector3(0, gravity, 0) * Time.deltaTime;
     }
 
     internal void Highlight()

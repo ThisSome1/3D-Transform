@@ -67,7 +67,7 @@ public class Interact : MonoBehaviour
         selected = hoveredObject.gameObject;
         Rigidbody rb = hoveredObject.GetComponent<Rigidbody>();
         if (!rb.isKinematic)
-            rb.velocity = Vector3.zero;
+            rb.linearVelocity = Vector3.zero;
         rb.Sleep();
         hoveredObject.UnHighlight();
         hoveredObject = null;
